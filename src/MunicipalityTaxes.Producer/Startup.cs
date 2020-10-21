@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using MunicipalityTaxes.DataAccess.Model;
 
 namespace MunicipalityTaxes.Producer
 {
@@ -18,6 +20,12 @@ namespace MunicipalityTaxes.Producer
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<MunicipalityContext>(options =>
+            {
+                var cs = Configuration["Sql:ConnectionString"];
+                options.UseSqlServer(cs);
+            });
+
             services.AddControllers();
         }
 
