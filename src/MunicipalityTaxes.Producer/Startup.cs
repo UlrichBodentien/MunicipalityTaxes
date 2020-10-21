@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MunicipalityTaxes.DataAccess.Model;
+using MunicipalityTaxes.DataAccess.Repositories;
 
 namespace MunicipalityTaxes.Producer
 {
@@ -25,6 +26,8 @@ namespace MunicipalityTaxes.Producer
                 var cs = Configuration["Sql:ConnectionString"];
                 options.UseSqlServer(cs);
             });
+
+            services.AddTransient<IMunicipalityTaxRepository, MunicipalityTaxRepository>();
 
             services.AddControllers();
         }
