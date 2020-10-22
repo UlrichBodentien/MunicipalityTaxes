@@ -11,6 +11,6 @@ namespace MunicipalityTaxes.DataAccess.Dtos
 
         public MunicipalityTaxTypeEnum MunicipalityTaxType { get; set; }
 
-        public Guid MunicipalityId { get; set; }
+        public string MunicipalityName { get; set; }
     }
 }

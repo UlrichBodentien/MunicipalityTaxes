@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MunicipalityTaxes.DataAcces
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MunicipalityTaxes.Core", "MunicipalityTaxes.Core\MunicipalityTaxes.Core.csproj", "{7FB1F0D6-9FFE-4367-9A7B-C11F54A3E115}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MunicipalityTaxes.Core.Tests", "MunicipalityTaxes.Core.Tests\MunicipalityTaxes.Core.Tests.csproj", "{C88D8BA1-993C-4785-9989-D15ABA005698}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MunicipalityTaxes.Tests", "MunicipalityTaxes.Core.Tests\MunicipalityTaxes.Tests.csproj", "{C88D8BA1-993C-4785-9989-D15ABA005698}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

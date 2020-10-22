@@ -4,8 +4,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using MunicipalityTaxes.Core.Data;
 using MunicipalityTaxes.DataAccess.Model;
-using MunicipalityTaxes.DataAccess.Repositories;
+using MunicipalityTaxes.DataAccess.Repositories.Tax;
 
 namespace MunicipalityTaxes.Producer
 {
@@ -28,6 +29,7 @@ namespace MunicipalityTaxes.Producer
             });
 
             services.AddTransient<IMunicipalityTaxRepository, MunicipalityTaxRepository>();
+            services.AddTransient<ICsvTaxParser, CsvTaxParser>();
 
             services.AddControllers();
         }

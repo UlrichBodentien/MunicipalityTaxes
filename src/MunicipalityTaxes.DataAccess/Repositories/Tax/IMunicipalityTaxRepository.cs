@@ -2,10 +2,10 @@
 using System.Threading.Tasks;
 using MunicipalityTaxes.DataAccess.Dtos;
 
-namespace MunicipalityTaxes.DataAccess.Repositories
+namespace MunicipalityTaxes.DataAccess.Repositories.Tax
 {
     public interface IMunicipalityTaxRepository
     {
-        Task<Guid> AddAsync(CreateMunicipalityTaxDto createMunicipalityTaxDto);
+        Task<AddResult> AddAsync(CreateMunicipalityTaxDto createMunicipalityTaxDto);
     }
 }

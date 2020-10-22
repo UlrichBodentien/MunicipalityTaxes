@@ -1,9 +1,10 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using MunicipalityTaxes.Core.Extensions;
+using MunicipalityTaxes.Core.Data;
+using MunicipalityTaxes.Core.Exceptions;
 using MunicipalityTaxes.DataAccess.Dtos;
-using MunicipalityTaxes.DataAccess.Repositories;
+using MunicipalityTaxes.DataAccess.Repositories.Tax;
 
 namespace MunicipalityTaxes.Producer.Controllers
 {
@@ -12,27 +13,48 @@ namespace MunicipalityTaxes.Producer.Controllers
     public class MunicipalityTaxController : ControllerBase
     {
         private readonly IMunicipalityTaxRepository municipalityTaxRepository;
+        private readonly ICsvTaxParser csvTaxParser;
 
-        public MunicipalityTaxController(IMunicipalityTaxRepository municipalityTaxRepository)
+        public MunicipalityTaxController(
+            IMunicipalityTaxRepository municipalityTaxRepository,
+            ICsvTaxParser csvTaxParser)
         {
             this.municipalityTaxRepository = municipalityTaxRepository;
+            this.csvTaxParser = csvTaxParser;
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateAsync([FromBody]CreateMunicipalityTaxDto createMunicipalityTaxDto)
         {
-            if (createMunicipalityTaxDto.MunicipalityTaxType.IsStartDateValid(createMunicipalityTaxDto.StartDate) == false)
+            var result = await municipalityTaxRepository.AddAsync(createMunicipalityTaxDto);
+            if (result.DidSucceed == false)
             {
-                return BadRequest("Start date must match the selected tax type");
+                return BadRequest(result.ErrorMessage);
             }
 
-            var id = await municipalityTaxRepository.AddAsync(createMunicipalityTaxDto);
-            if (id == Guid.Empty)
+            return Ok(result.Id);
+        }
+
+        [HttpPost]
+        [Route("csvImport")]
+        public async Task<IActionResult> ImportCsvDataAsync([FromForm(Name = "file")] IFormFile file)
+        {
+            using var stream = file.OpenReadStream();
+
+            try
             {
-                return Conflict("Could not create the MunicipalityTax");
+                var records = csvTaxParser.ParseTaxCsvFile(stream);
+                foreach (var record in records)
+                {
+                    await municipalityTaxRepository.AddAsync(record);
+                }
+            }
+            catch (UnableToParseCsvException)
+            {
+                return BadRequest("Bad file format. Unable to parse the csv file");
             }
 
-            return Ok(id);
+            return Ok(file.Name);
         }
     }
 }

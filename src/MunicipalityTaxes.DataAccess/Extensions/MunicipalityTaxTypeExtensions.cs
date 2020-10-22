@@ -1,7 +1,7 @@
 ﻿using System;
 using MunicipalityTaxes.DataAccess.Model;
 
-namespace MunicipalityTaxes.Core.Extensions
+namespace MunicipalityTaxes.DataAccess.Extensions
 {
     public static class MunicipalityTaxTypeExtensions
     {

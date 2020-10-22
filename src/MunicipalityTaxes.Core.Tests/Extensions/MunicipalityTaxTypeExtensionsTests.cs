@@ -1,5 +1,5 @@
 ﻿using System;
-using MunicipalityTaxes.Core.Extensions;
+using MunicipalityTaxes.DataAccess.Extensions;
 using MunicipalityTaxes.DataAccess.Model;
 using Xunit;
 
