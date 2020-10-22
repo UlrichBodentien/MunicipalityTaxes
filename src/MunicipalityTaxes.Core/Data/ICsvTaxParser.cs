@@ -6,6 +6,6 @@ namespace MunicipalityTaxes.Core.Data
 {
     public interface ICsvTaxParser
     {
-        List<CreateMunicipalityTaxDto> ParseTaxCsvFile(Stream stream);
+        List<(string Name, CreateMunicipalityTaxDto TaxDto)> ParseTaxCsvFile(Stream stream);
     }
 }

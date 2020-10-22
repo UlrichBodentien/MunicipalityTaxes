@@ -24,8 +24,8 @@ namespace MunicipalityTaxes.Core.Tests.Data
             var result = csvTaxParser.ParseTaxCsvFile(fileStream);
 
             Assert.Equal(9, result.Count);
-            Assert.Equal("Holbæk", result[0].MunicipalityName);
-            Assert.Equal("Sorø", result[5].MunicipalityName);
+            Assert.Equal("Holbæk", result[0].Name);
+            Assert.Equal("Sorø", result[5].Name);
         }
 
         [Fact]

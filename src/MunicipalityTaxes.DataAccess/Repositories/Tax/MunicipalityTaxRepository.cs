@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -18,11 +20,54 @@ namespace MunicipalityTaxes.DataAccess.Repositories.Tax
             this.databaseContext = databaseContext;
         }
 
-        public async Task<AddResult> AddAsync(CreateMunicipalityTaxDto createMunicipalityTaxDto)
+        public async Task<GetMunicipalityTaxDto> GetAsync(string municipalityName, DateTime startDate)
         {
             try
             {
-                var municipality = await databaseContext.Municipality.FirstOrDefaultAsync(x => x.Name == createMunicipalityTaxDto.MunicipalityName);
+                var taxRecordsWithinYear = await databaseContext
+                    .MunicipalityTax
+                    .Where(x =>
+                        x.Municipality.Name == municipalityName
+                        && startDate.Year == x.StartDate.Year)
+                    .ToListAsync();
+
+                var taxRecord = taxRecordsWithinYear
+                    .Where(x =>
+                        startDate >= x.StartDate
+                        && startDate < x.StartDate.AddDays(CalculateDaysToAdd(x.StartDate, x.TaxTypeId)))
+                    .OrderBy(x => x.TaxTypeId)
+                    .FirstOrDefault();
+
+                return new GetMunicipalityTaxDto
+                {
+                    StartDate = taxRecord.StartDate,
+                    Tax = taxRecord.Tax,
+                    TaxType = taxRecord.TaxTypeId
+                };
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        private int CalculateDaysToAdd(DateTime startDate, MunicipalityTaxTypeEnum taxTypeId)
+        {
+            return taxTypeId switch
+            {
+                MunicipalityTaxTypeEnum.Daily => 1,
+                MunicipalityTaxTypeEnum.Weekly => 7,
+                MunicipalityTaxTypeEnum.Monthly => DateTime.DaysInMonth(startDate.Year, startDate.Month),
+                MunicipalityTaxTypeEnum.Yearly => new DateTime(startDate.Year, 12, 31).DayOfYear,
+                _ => throw new NotImplementedException(),
+            };
+        }
+
+        public async Task<AddResult> AddAsync(string municipalityName, CreateMunicipalityTaxDto createMunicipalityTaxDto)
+        {
+            try
+            {
+                var municipality = await databaseContext.Municipality.FirstOrDefaultAsync(x => x.Name == municipalityName);
                 if (municipality == null)
                 {
                     return AddResult.FailedResult("Municipality doesn't exist");

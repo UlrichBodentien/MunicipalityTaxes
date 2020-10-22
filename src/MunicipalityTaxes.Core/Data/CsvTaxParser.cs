@@ -13,9 +13,9 @@ namespace MunicipalityTaxes.Core.Data
     {
         private const string Delimitter = ",";
 
-        public List<CreateMunicipalityTaxDto> ParseTaxCsvFile(Stream stream)
+        public List<(string Name, CreateMunicipalityTaxDto TaxDto)> ParseTaxCsvFile(Stream stream)
         {
-            var items = new List<CreateMunicipalityTaxDto>();
+            var items = new List<(string name, CreateMunicipalityTaxDto taxDto)>();
 
             var parser = PrepareParser(stream);
             while (parser.EndOfData == false)
@@ -29,7 +29,7 @@ namespace MunicipalityTaxes.Core.Data
             return items;
         }
 
-        private static CreateMunicipalityTaxDto ParseRecord(string[] fields)
+        private static (string Name, CreateMunicipalityTaxDto TaxDto) ParseRecord(string[] fields)
         {
             if (fields.Count() != 4)
             {
@@ -58,13 +58,12 @@ namespace MunicipalityTaxes.Core.Data
 
             var record = new CreateMunicipalityTaxDto
             {
-                MunicipalityName = name,
                 MunicipalityTaxType = taxType,
                 Tax = tax,
                 StartDate = startDate,
             };
 
-            return record;
+            return (name, record);
         }
 
         private static TextFieldParser PrepareParser(Stream stream)
