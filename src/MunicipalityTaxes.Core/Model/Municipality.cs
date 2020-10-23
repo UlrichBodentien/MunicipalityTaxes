@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace MunicipalityTaxes.DataAccess.Model
+namespace MunicipalityTaxes.Core.Model
 {
     public class Municipality
     {

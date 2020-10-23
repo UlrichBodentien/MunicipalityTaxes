@@ -3,8 +3,8 @@ using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
-using MunicipalityTaxes.DataAccess.Dtos;
-using MunicipalityTaxes.Utilities.Exceptions;
+using MunicipalityTaxes.Core.Dtos;
+using MunicipalityTaxes.Core.Exceptions;
 using Newtonsoft.Json;
 
 namespace MunicipalityTaxes.Producer.Exceptions

@@ -1,6 +1,6 @@
 ﻿using System;
-using MunicipalityTaxes.DataAccess.Extensions;
-using MunicipalityTaxes.DataAccess.Model;
+using MunicipalityTaxes.Core.Extensions;
+using MunicipalityTaxes.Core.Model;
 using Xunit;
 
 namespace MunicipalityTaxes.Core.Tests.Extensions

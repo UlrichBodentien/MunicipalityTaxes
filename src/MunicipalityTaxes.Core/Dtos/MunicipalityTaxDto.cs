@@ -1,8 +1,8 @@
 ﻿using System;
-using MunicipalityTaxes.DataAccess.Model;
+using MunicipalityTaxes.Core.Model;
 using Newtonsoft.Json;
 
-namespace MunicipalityTaxes.DataAccess.Dtos
+namespace MunicipalityTaxes.Core.Dtos
 {
     public class MunicipalityTaxDto
     {
@@ -14,5 +14,8 @@ namespace MunicipalityTaxes.DataAccess.Dtos
 
         [JsonProperty("taxType")]
         public MunicipalityTaxTypeEnum TaxType { get; set; }
+
+        [JsonProperty("municipalityName")]
+        public string MunicipalityName { get; set; }
     }
 }

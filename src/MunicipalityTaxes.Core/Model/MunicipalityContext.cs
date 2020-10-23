@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace MunicipalityTaxes.DataAccess.Model
+namespace MunicipalityTaxes.Core.Model
 {
     public class MunicipalityContext : DbContext
     {

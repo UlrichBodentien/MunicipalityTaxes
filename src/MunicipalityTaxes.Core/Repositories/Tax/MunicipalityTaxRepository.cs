@@ -4,12 +4,12 @@ using System.Net;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
-using MunicipalityTaxes.DataAccess.Dtos;
-using MunicipalityTaxes.DataAccess.Exceptions;
-using MunicipalityTaxes.DataAccess.Extensions;
-using MunicipalityTaxes.DataAccess.Model;
+using MunicipalityTaxes.Core.Dtos;
+using MunicipalityTaxes.Core.Exceptions;
+using MunicipalityTaxes.Core.Extensions;
+using MunicipalityTaxes.Core.Model;
 
-namespace MunicipalityTaxes.DataAccess.Repositories.Tax
+namespace MunicipalityTaxes.Core.Repositories.Tax
 {
     public class MunicipalityTaxRepository : IMunicipalityTaxRepository
     {
@@ -38,11 +38,17 @@ namespace MunicipalityTaxes.DataAccess.Repositories.Tax
                     .OrderBy(x => x.TaxTypeId)
                     .FirstOrDefault();
 
+                if (taxRecord == null)
+                {
+                    return null;
+                }
+
                 return new MunicipalityTaxDto
                 {
                     StartDate = taxRecord.StartDate,
                     Tax = taxRecord.Tax,
-                    TaxType = taxRecord.TaxTypeId
+                    TaxType = taxRecord.TaxTypeId,
+                    MunicipalityName = municipalityName,
                 };
             }
             catch (Exception)
@@ -51,16 +57,16 @@ namespace MunicipalityTaxes.DataAccess.Repositories.Tax
             }
         }
 
-        public async Task<Guid> AddAsync(string municipalityName, MunicipalityTaxDto createMunicipalityTaxDto)
+        public async Task<Guid> AddAsync(MunicipalityTaxDto createMunicipalityTaxDto)
         {
-            return await AddWithRetryAsync(municipalityName, createMunicipalityTaxDto);
+            return await AddWithRetryAsync(createMunicipalityTaxDto);
         }
 
-        private async Task<Guid> AddWithRetryAsync(string municipalityName, MunicipalityTaxDto createMunicipalityTaxDto, int retries = 0)
+        private async Task<Guid> AddWithRetryAsync(MunicipalityTaxDto createMunicipalityTaxDto, int retries = 0)
         {
             try
             {
-                var municipality = await databaseContext.Municipality.FirstOrDefaultAsync(x => x.Name == municipalityName);
+                var municipality = await databaseContext.Municipality.FirstOrDefaultAsync(x => x.Name == createMunicipalityTaxDto.MunicipalityName);
                 if (municipality == null)
                 {
                     throw new UnableToAddException(HttpStatusCode.BadRequest, "Municipality doesn't exist");
@@ -96,7 +102,7 @@ namespace MunicipalityTaxes.DataAccess.Repositories.Tax
                 if (retries == 0)
                 {
                     retries++;
-                    return await AddAsync(municipalityName, createMunicipalityTaxDto);
+                    return await AddAsync(createMunicipalityTaxDto);
                 }
 
                 throw new UnableToAddException(HttpStatusCode.InternalServerError, "Unable to create the municipality tax");

@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace MunicipalityTaxes.DataAccess.Dtos
+namespace MunicipalityTaxes.Core.Dtos
 {
     public class ErrorResponse
     {

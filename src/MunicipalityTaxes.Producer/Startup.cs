@@ -5,8 +5,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MunicipalityTaxes.Core.Data;
-using MunicipalityTaxes.DataAccess.Model;
-using MunicipalityTaxes.DataAccess.Repositories.Tax;
+using MunicipalityTaxes.Core.Model;
+using MunicipalityTaxes.Core.Repositories.Tax;
 using MunicipalityTaxes.Producer.Exceptions;
 
 namespace MunicipalityTaxes.Producer

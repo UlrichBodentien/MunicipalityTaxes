@@ -1,4 +1,4 @@
-﻿namespace MunicipalityTaxes.DataAccess.Model
+﻿namespace MunicipalityTaxes.Core.Model
 {
     public enum MunicipalityTaxTypeEnum
     {

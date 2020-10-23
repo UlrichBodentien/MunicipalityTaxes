@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using MunicipalityTaxes.DataAccess.Model;
+using MunicipalityTaxes.Core.Model;
 
-namespace MunicipalityTaxes.DataAccess.Migrations
+namespace MunicipalityTaxes.Core.Migrations
 {
     [DbContext(typeof(MunicipalityContext))]
     [Migration("20201021204424_Initial")]
@@ -21,7 +21,7 @@ namespace MunicipalityTaxes.DataAccess.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("MunicipalityTaxes.DataAccess.Model.Municipality", b =>
+            modelBuilder.Entity("MunicipalityTaxes.Core.Model.Municipality", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -35,7 +35,7 @@ namespace MunicipalityTaxes.DataAccess.Migrations
                     b.ToTable("Municipality");
                 });
 
-            modelBuilder.Entity("MunicipalityTaxes.DataAccess.Model.MunicipalityTax", b =>
+            modelBuilder.Entity("MunicipalityTaxes.Core.Model.MunicipalityTax", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -62,7 +62,7 @@ namespace MunicipalityTaxes.DataAccess.Migrations
                     b.ToTable("MunicipalityTax");
                 });
 
-            modelBuilder.Entity("MunicipalityTaxes.DataAccess.Model.MunicipalityTaxType", b =>
+            modelBuilder.Entity("MunicipalityTaxes.Core.Model.MunicipalityTaxType", b =>
                 {
                     b.Property<int>("Id")
                         .HasColumnType("int");
@@ -97,15 +97,15 @@ namespace MunicipalityTaxes.DataAccess.Migrations
                         });
                 });
 
-            modelBuilder.Entity("MunicipalityTaxes.DataAccess.Model.MunicipalityTax", b =>
+            modelBuilder.Entity("MunicipalityTaxes.Core.Model.MunicipalityTax", b =>
                 {
-                    b.HasOne("MunicipalityTaxes.DataAccess.Model.Municipality", "Municipality")
+                    b.HasOne("MunicipalityTaxes.Core.Model.Municipality", "Municipality")
                         .WithMany("Taxes")
                         .HasForeignKey("MunicipalityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MunicipalityTaxes.DataAccess.Model.MunicipalityTaxType", "TaxType")
+                    b.HasOne("MunicipalityTaxes.Core.Model.MunicipalityTaxType", "TaxType")
                         .WithMany()
                         .HasForeignKey("TaxTypeId")
                         .OnDelete(DeleteBehavior.Cascade)

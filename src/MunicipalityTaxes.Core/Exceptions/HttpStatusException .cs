@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net;
 
-namespace MunicipalityTaxes.Utilities.Exceptions
+namespace MunicipalityTaxes.Core.Exceptions
 {
     public class HttpStatusException : Exception
     {

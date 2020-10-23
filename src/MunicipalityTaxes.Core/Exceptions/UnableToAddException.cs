@@ -1,7 +1,7 @@
 ﻿using System.Net;
-using MunicipalityTaxes.Utilities.Exceptions;
+using MunicipalityTaxes.Core.Exceptions;
 
-namespace MunicipalityTaxes.DataAccess.Exceptions
+namespace MunicipalityTaxes.Core.Exceptions
 {
     public class UnableToAddException : HttpStatusException
     {

@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using Microsoft.VisualBasic.FileIO;
-using MunicipalityTaxes.Utilities.Exceptions;
-using MunicipalityTaxes.DataAccess.Dtos;
-using MunicipalityTaxes.DataAccess.Model;
+using MunicipalityTaxes.Core.Dtos;
+using MunicipalityTaxes.Core.Exceptions;
+using MunicipalityTaxes.Core.Model;
 
 namespace MunicipalityTaxes.Core.Data
 {
@@ -13,11 +14,11 @@ namespace MunicipalityTaxes.Core.Data
     {
         private const string Delimitter = ",";
 
-        public List<(string Name, MunicipalityTaxDto TaxDto)> ParseTaxCsvFile(Stream stream)
+        public List<MunicipalityTaxDto> ParseTaxCsvFile(Stream stream)
         {
-            var items = new List<(string name, MunicipalityTaxDto taxDto)>();
+            var items = new List<MunicipalityTaxDto>();
 
-            var parser = PrepareParser(stream);
+            using var parser = PrepareParser(stream);
             while (parser.EndOfData == false)
             {
                 var fields = parser.ReadFields();
@@ -29,7 +30,7 @@ namespace MunicipalityTaxes.Core.Data
             return items;
         }
 
-        private static (string Name, MunicipalityTaxDto TaxDto) ParseRecord(string[] fields)
+        private static MunicipalityTaxDto ParseRecord(string[] fields)
         {
             if (fields.Count() != 4)
             {
@@ -51,7 +52,7 @@ namespace MunicipalityTaxes.Core.Data
                 throw new UnableToParseCsvException("Unable to parse tax");
             }
 
-            if (DateTime.TryParse(startDateString, out var startDate) == false)
+            if (DateTime.TryParse(startDateString, CultureInfo.InvariantCulture, DateTimeStyles.None, out var startDate) == false)
             {
                 throw new UnableToParseCsvException("Unable to parse start date");
             }
@@ -61,9 +62,10 @@ namespace MunicipalityTaxes.Core.Data
                 TaxType = taxType,
                 Tax = tax,
                 StartDate = startDate,
+                MunicipalityName = name,
             };
 
-            return (name, record);
+            return record;
         }
 
         private static TextFieldParser PrepareParser(Stream stream)

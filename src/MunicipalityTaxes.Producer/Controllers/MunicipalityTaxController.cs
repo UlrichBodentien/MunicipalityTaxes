@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MunicipalityTaxes.Core.Data;
-using MunicipalityTaxes.DataAccess.Dtos;
-using MunicipalityTaxes.DataAccess.Repositories.Tax;
+using MunicipalityTaxes.Core.Dtos;
+using MunicipalityTaxes.Core.Repositories.Tax;
 
 namespace MunicipalityTaxes.Producer.Controllers
 {
@@ -24,8 +24,8 @@ namespace MunicipalityTaxes.Producer.Controllers
         }
 
         [HttpGet]
-        [Route("{municipalityName}/{date}")]
-        public async Task<IActionResult> GetAsync([FromRoute]string municipalityName, [FromRoute]DateTime date)
+        [Route("{municipalityName}")]
+        public async Task<IActionResult> GetAsync([FromRoute] string municipalityName, [FromQuery] DateTime date)
         {
             var tax = await municipalityTaxRepository.GetAsync(municipalityName, date);
             if (tax == null)
@@ -36,10 +36,10 @@ namespace MunicipalityTaxes.Producer.Controllers
             return Ok(tax);
         }
 
-        [HttpPost("{municipalityName}")]
-        public async Task<IActionResult> CreateAsync([FromRoute]string municipalityName, [FromBody]MunicipalityTaxDto createMunicipalityTaxDto)
+        [HttpPost]
+        public async Task<IActionResult> CreateAsync([FromBody] MunicipalityTaxDto createMunicipalityTaxDto)
         {
-            var id = await municipalityTaxRepository.AddAsync(municipalityName, createMunicipalityTaxDto);
+            var id = await municipalityTaxRepository.AddAsync(createMunicipalityTaxDto);
             return Ok(id);
         }
 
@@ -52,7 +52,7 @@ namespace MunicipalityTaxes.Producer.Controllers
             var records = csvTaxParser.ParseTaxCsvFile(stream);
             foreach (var record in records)
             {
-                await municipalityTaxRepository.AddAsync(record.Name, record.TaxDto);
+                await municipalityTaxRepository.AddAsync(record);
             }
 
             return Ok(file.Name);

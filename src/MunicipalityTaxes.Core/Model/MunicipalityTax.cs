@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MunicipalityTaxes.DataAccess.Model
+namespace MunicipalityTaxes.Core.Model
 {
     public class MunicipalityTax
     {

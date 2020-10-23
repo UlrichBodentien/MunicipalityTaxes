@@ -1,6 +1,6 @@
 ﻿using System.IO;
 using MunicipalityTaxes.Core.Data;
-using MunicipalityTaxes.Utilities.Exceptions;
+using MunicipalityTaxes.Core.Exceptions;
 using Xunit;
 
 namespace MunicipalityTaxes.Core.Tests.Data
@@ -24,8 +24,8 @@ namespace MunicipalityTaxes.Core.Tests.Data
             var result = csvTaxParser.ParseTaxCsvFile(fileStream);
 
             Assert.Equal(9, result.Count);
-            Assert.Equal("Holbæk", result[0].Name);
-            Assert.Equal("Sorø", result[5].Name);
+            Assert.Equal("Holbæk", result[0].MunicipalityName);
+            Assert.Equal("Sorø", result[5].MunicipalityName);
         }
 
         [Fact]

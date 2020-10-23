@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace MunicipalityTaxes.DataAccess.Migrations
+namespace MunicipalityTaxes.Core.Migrations
 {
     public partial class Initial : Migration
     {

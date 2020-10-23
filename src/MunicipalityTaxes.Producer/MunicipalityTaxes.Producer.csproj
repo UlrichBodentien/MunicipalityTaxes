@@ -14,7 +14,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MunicipalityTaxes.Core\MunicipalityTaxes.Core.csproj" />
-    <ProjectReference Include="..\MunicipalityTaxes.DataAccess\MunicipalityTaxes.DataAccess.csproj" />
   </ItemGroup>
 
 
