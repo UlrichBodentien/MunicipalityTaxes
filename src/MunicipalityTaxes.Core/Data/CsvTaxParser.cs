@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Microsoft.VisualBasic.FileIO;
-using MunicipalityTaxes.Core.Exceptions;
+using MunicipalityTaxes.Utilities.Exceptions;
 using MunicipalityTaxes.DataAccess.Dtos;
 using MunicipalityTaxes.DataAccess.Model;
 
@@ -13,9 +13,9 @@ namespace MunicipalityTaxes.Core.Data
     {
         private const string Delimitter = ",";
 
-        public List<(string Name, CreateMunicipalityTaxDto TaxDto)> ParseTaxCsvFile(Stream stream)
+        public List<(string Name, MunicipalityTaxDto TaxDto)> ParseTaxCsvFile(Stream stream)
         {
-            var items = new List<(string name, CreateMunicipalityTaxDto taxDto)>();
+            var items = new List<(string name, MunicipalityTaxDto taxDto)>();
 
             var parser = PrepareParser(stream);
             while (parser.EndOfData == false)
@@ -29,7 +29,7 @@ namespace MunicipalityTaxes.Core.Data
             return items;
         }
 
-        private static (string Name, CreateMunicipalityTaxDto TaxDto) ParseRecord(string[] fields)
+        private static (string Name, MunicipalityTaxDto TaxDto) ParseRecord(string[] fields)
         {
             if (fields.Count() != 4)
             {
@@ -56,9 +56,9 @@ namespace MunicipalityTaxes.Core.Data
                 throw new UnableToParseCsvException("Unable to parse start date");
             }
 
-            var record = new CreateMunicipalityTaxDto
+            var record = new MunicipalityTaxDto
             {
-                MunicipalityTaxType = taxType,
+                TaxType = taxType,
                 Tax = tax,
                 StartDate = startDate,
             };

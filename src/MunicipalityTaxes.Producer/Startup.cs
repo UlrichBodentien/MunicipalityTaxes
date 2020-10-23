@@ -7,6 +7,7 @@ using Microsoft.Extensions.Hosting;
 using MunicipalityTaxes.Core.Data;
 using MunicipalityTaxes.DataAccess.Model;
 using MunicipalityTaxes.DataAccess.Repositories.Tax;
+using MunicipalityTaxes.Producer.Exceptions;
 
 namespace MunicipalityTaxes.Producer
 {
@@ -43,10 +44,13 @@ namespace MunicipalityTaxes.Producer
             }
 
             app.UseHttpsRedirection();
-
             app.UseRouting();
-
             app.UseAuthorization();
+
+            app.UseExceptionHandler(a => a.Run(async context =>
+            {
+                await ExceptionHandler.HandleExceptionAsync(context);
+            }));
 
             app.UseEndpoints(endpoints =>
             {

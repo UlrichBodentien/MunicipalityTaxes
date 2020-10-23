@@ -1,6 +1,6 @@
 ﻿using System.IO;
 using MunicipalityTaxes.Core.Data;
-using MunicipalityTaxes.Core.Exceptions;
+using MunicipalityTaxes.Utilities.Exceptions;
 using Xunit;
 
 namespace MunicipalityTaxes.Core.Tests.Data

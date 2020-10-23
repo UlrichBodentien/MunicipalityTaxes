@@ -13,4 +13,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\MunicipalityTaxes.Utilities\MunicipalityTaxes.Utilities.csproj" />
+  </ItemGroup>
+
 </Project>

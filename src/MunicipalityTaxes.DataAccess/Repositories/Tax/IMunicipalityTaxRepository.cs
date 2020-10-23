@@ -6,8 +6,8 @@ namespace MunicipalityTaxes.DataAccess.Repositories.Tax
 {
     public interface IMunicipalityTaxRepository
     {
-        Task<AddResult> AddAsync(string municipalityName, CreateMunicipalityTaxDto createMunicipalityTaxDto);
+        Task<Guid> AddAsync(string municipalityName, MunicipalityTaxDto createMunicipalityTaxDto);
 
-        Task<GetMunicipalityTaxDto> GetAsync(string municipalityName, DateTime startDate);
+        Task<MunicipalityTaxDto> GetAsync(string municipalityName, DateTime startDate);
     }
 }

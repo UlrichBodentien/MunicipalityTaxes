@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MunicipalityTaxes.Core.Data;
-using MunicipalityTaxes.Core.Exceptions;
 using MunicipalityTaxes.DataAccess.Dtos;
 using MunicipalityTaxes.DataAccess.Repositories.Tax;
 
@@ -38,15 +37,10 @@ namespace MunicipalityTaxes.Producer.Controllers
         }
 
         [HttpPost("{municipalityName}")]
-        public async Task<IActionResult> CreateAsync([FromRoute]string municipalityName, [FromBody]CreateMunicipalityTaxDto createMunicipalityTaxDto)
+        public async Task<IActionResult> CreateAsync([FromRoute]string municipalityName, [FromBody]MunicipalityTaxDto createMunicipalityTaxDto)
         {
-            var result = await municipalityTaxRepository.AddAsync(municipalityName, createMunicipalityTaxDto);
-            if (result.DidSucceed == false)
-            {
-                return BadRequest(result.ErrorMessage);
-            }
-
-            return Ok(result.Id);
+            var id = await municipalityTaxRepository.AddAsync(municipalityName, createMunicipalityTaxDto);
+            return Ok(id);
         }
 
         [HttpPost]
@@ -55,17 +49,10 @@ namespace MunicipalityTaxes.Producer.Controllers
         {
             using var stream = file.OpenReadStream();
 
-            try
+            var records = csvTaxParser.ParseTaxCsvFile(stream);
+            foreach (var record in records)
             {
-                var records = csvTaxParser.ParseTaxCsvFile(stream);
-                foreach (var record in records)
-                {
-                    await municipalityTaxRepository.AddAsync(record.Name, record.TaxDto);
-                }
-            }
-            catch (UnableToParseCsvException)
-            {
-                return BadRequest("Bad file format. Unable to parse the csv file");
+                await municipalityTaxRepository.AddAsync(record.Name, record.TaxDto);
             }
 
             return Ok(file.Name);
