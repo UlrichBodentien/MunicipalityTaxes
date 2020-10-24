@@ -10,7 +10,7 @@ using MunicipalityTaxes.Core.Model;
 namespace MunicipalityTaxes.Core.Migrations
 {
     [DbContext(typeof(MunicipalityContext))]
-    [Migration("20201021204424_Initial")]
+    [Migration("20201024103829_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -57,7 +57,8 @@ namespace MunicipalityTaxes.Core.Migrations
 
                     b.HasIndex("MunicipalityId");
 
-                    b.HasIndex("TaxTypeId");
+                    b.HasIndex("TaxTypeId", "StartDate", "MunicipalityId")
+                        .IsUnique();
 
                     b.ToTable("MunicipalityTax");
                 });

@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using MunicipalityTaxes.Core.Dtos;
@@ -57,41 +59,36 @@ namespace MunicipalityTaxes.Core.Repositories.Tax
             }
         }
 
-        public async Task<Guid> AddAsync(MunicipalityTaxDto createMunicipalityTaxDto)
-        {
-            return await AddWithRetryAsync(createMunicipalityTaxDto);
-        }
-
-        private async Task<Guid> AddWithRetryAsync(MunicipalityTaxDto createMunicipalityTaxDto, int retries = 0)
+        public async Task<bool> AddRangeAsync(List<MunicipalityTaxDto> municipalityTaxes)
         {
             try
             {
-                var municipality = await databaseContext.Municipality.FirstOrDefaultAsync(x => x.Name == createMunicipalityTaxDto.MunicipalityName);
-                if (municipality == null)
+                foreach (var dto in municipalityTaxes)
                 {
-                    throw new UnableToAddException(HttpStatusCode.BadRequest, "Municipality doesn't exist");
+                    var dataModel = await CreateDataModelAsync(dto);
+                    await databaseContext.AddAsync(dataModel);
                 }
 
-                if (databaseContext.MunicipalityTax.Any(x => x.TaxType.Id == createMunicipalityTaxDto.TaxType
-                    && x.StartDate == createMunicipalityTaxDto.StartDate
-                    && x.MunicipalityId == municipality.Id))
-                {
-                    throw new UnableToAddException(HttpStatusCode.BadRequest, "Tax record already exists");
-                }
+                await databaseContext.SaveChangesAsync();
+                return true;
+            }
+            catch (DbUpdateException ex)
+            {
+                CheckIfDuplicate(ex, "One of the records already exists, or the list contains duplicates");
+                throw new UnableToAddException(HttpStatusCode.BadRequest, "Unable to import the csv file");
+            }
+        }
 
-                if (createMunicipalityTaxDto.TaxType.IsStartDateValid(createMunicipalityTaxDto.StartDate) == false)
-                {
-                    throw new UnableToAddException(HttpStatusCode.BadRequest, "Start date must match the selected tax type");
-                }
+        public async Task<Guid> AddAsync(MunicipalityTaxDto municipalityTaxDto)
+        {
+            return await AddWithRetryAsync(municipalityTaxDto);
+        }
 
-                var muncipalityTax = new MunicipalityTax
-                {
-                    Id = Guid.NewGuid(),
-                    StartDate = createMunicipalityTaxDto.StartDate,
-                    Tax = createMunicipalityTaxDto.Tax,
-                    TaxTypeId = createMunicipalityTaxDto.TaxType,
-                    MunicipalityId = municipality.Id,
-                };
+        private async Task<Guid> AddWithRetryAsync(MunicipalityTaxDto municipalityTaxDto, int retries = 0)
+        {
+            try
+            {
+                var muncipalityTax = await CreateDataModelAsync(municipalityTaxDto);
 
                 await databaseContext.AddAsync(muncipalityTax);
                 await databaseContext.SaveChangesAsync();
@@ -102,15 +99,40 @@ namespace MunicipalityTaxes.Core.Repositories.Tax
                 if (retries == 0)
                 {
                     retries++;
-                    return await AddAsync(createMunicipalityTaxDto);
+                    return await AddAsync(municipalityTaxDto);
                 }
 
                 throw new UnableToAddException(HttpStatusCode.InternalServerError, "Unable to create the municipality tax");
             }
-            catch (DbUpdateException)
+            catch (DbUpdateException ex)
             {
+                CheckIfDuplicate(ex, "Tax record already exists");
                 throw new UnableToAddException(HttpStatusCode.InternalServerError, "Unable to create the municipality tax");
             }
+        }
+
+        private async Task<MunicipalityTax> CreateDataModelAsync(MunicipalityTaxDto municipalityTaxDto)
+        {
+            var municipality = await databaseContext.Municipality.FirstOrDefaultAsync(x => x.Name == municipalityTaxDto.MunicipalityName);
+            if (municipality == null)
+            {
+                throw new UnableToAddException(HttpStatusCode.BadRequest, "Municipality doesn't exist");
+            }
+
+            if (municipalityTaxDto.TaxType.IsStartDateValid(municipalityTaxDto.StartDate) == false)
+            {
+                throw new UnableToAddException(HttpStatusCode.BadRequest, "Start date must match the selected tax type");
+            }
+
+            var muncipalityTax = new MunicipalityTax
+            {
+                Id = Guid.NewGuid(),
+                StartDate = municipalityTaxDto.StartDate,
+                Tax = municipalityTaxDto.Tax,
+                TaxTypeId = municipalityTaxDto.TaxType,
+                MunicipalityId = municipality.Id,
+            };
+            return muncipalityTax;
         }
 
         private int CalculateDaysToAdd(DateTime startDate, MunicipalityTaxTypeEnum taxTypeId)
@@ -123,6 +145,16 @@ namespace MunicipalityTaxes.Core.Repositories.Tax
                 MunicipalityTaxTypeEnum.Yearly => new DateTime(startDate.Year, 12, 31).DayOfYear,
                 _ => throw new NotImplementedException(),
             };
+        }
+
+        private void CheckIfDuplicate(DbUpdateException ex, string message)
+        {
+            var sqlException = ex.InnerException as SqlException;
+            if (sqlException != null && sqlException.Errors.OfType<SqlError>()
+                 .Any(se => se.Number == 2601 || se.Number == 2627))  /* PK or UKC violation */
+            {
+                throw new UnableToAddException(HttpStatusCode.BadRequest, message);
+            }
         }
     }
 }

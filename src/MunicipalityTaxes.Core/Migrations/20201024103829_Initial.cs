@@ -75,9 +75,10 @@ namespace MunicipalityTaxes.Core.Migrations
                 column: "MunicipalityId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_MunicipalityTax_TaxTypeId",
+                name: "IX_MunicipalityTax_TaxTypeId_StartDate_MunicipalityId",
                 table: "MunicipalityTax",
-                column: "TaxTypeId");
+                columns: new[] { "TaxTypeId", "StartDate", "MunicipalityId" },
+                unique: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

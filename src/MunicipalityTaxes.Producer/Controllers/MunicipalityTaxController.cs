@@ -47,15 +47,17 @@ namespace MunicipalityTaxes.Producer.Controllers
         [Route("csvImport")]
         public async Task<IActionResult> ImportCsvDataAsync([FromForm(Name = "file")] IFormFile file)
         {
-            using var stream = file.OpenReadStream();
-
-            var records = csvTaxParser.ParseTaxCsvFile(stream);
-            foreach (var record in records)
+            if (file != null)
             {
-                await municipalityTaxRepository.AddAsync(record);
+                using var stream = file.OpenReadStream();
+
+                var records = csvTaxParser.ParseTaxCsvFile(stream);
+                await municipalityTaxRepository.AddRangeAsync(records);
+
+                return Ok();
             }
 
-            return Ok(file.Name);
+            return BadRequest("A file must be supplied");
         }
     }
 }

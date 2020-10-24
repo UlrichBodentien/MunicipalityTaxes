@@ -55,7 +55,8 @@ namespace MunicipalityTaxes.Core.Migrations
 
                     b.HasIndex("MunicipalityId");
 
-                    b.HasIndex("TaxTypeId");
+                    b.HasIndex("TaxTypeId", "StartDate", "MunicipalityId")
+                        .IsUnique();
 
                     b.ToTable("MunicipalityTax");
                 });

@@ -19,6 +19,10 @@ namespace MunicipalityTaxes.Core.Model
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<MunicipalityTax>()
+                .HasIndex(x => new { x.TaxTypeId, x.StartDate, x.MunicipalityId })
+                .IsUnique(true);
+
             modelBuilder.Entity<MunicipalityTaxType>()
                 .Property(x => x.Id)
                 .ValueGeneratedNever();
