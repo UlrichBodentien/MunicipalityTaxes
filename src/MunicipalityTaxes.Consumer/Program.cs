@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
 using System.Threading.Tasks;
 using MunicipalityTaxes.Core.Data;
@@ -123,7 +124,7 @@ namespace MunicipalityTaxes.Consumer
         {
             Console.WriteLine("Please type the date");
             var dateString = Console.ReadLine();
-            if (DateTime.TryParse(dateString, out var date) == false)
+            if (DateTime.TryParse(dateString, CultureInfo.InvariantCulture, DateTimeStyles.None, out var date) == false)
             {
                 throw new InvalidInputException("Invalid date specified");
             }
@@ -135,7 +136,7 @@ namespace MunicipalityTaxes.Consumer
         {
             Console.WriteLine("Please type the tax");
             var taxString = Console.ReadLine();
-            if (double.TryParse(taxString, out var tax) == false)
+            if (double.TryParse(taxString, NumberStyles.Float, CultureInfo.InvariantCulture, out var tax) == false)
             {
                 throw new InvalidInputException("Invalid tax specified");
             }
