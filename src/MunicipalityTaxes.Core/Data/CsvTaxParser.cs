@@ -47,7 +47,7 @@ namespace MunicipalityTaxes.Core.Data
                 throw new UnableToParseCsvException("Unable to parse tax type");
             }
 
-            if (double.TryParse(taxString, out var tax) == false)
+            if (double.TryParse(taxString, NumberStyles.Float, CultureInfo.InvariantCulture, out var tax) == false)
             {
                 throw new UnableToParseCsvException("Unable to parse tax");
             }
