@@ -51,6 +51,7 @@ namespace MunicipalityTaxes.Core.Repositories.Tax
                     Tax = taxRecord.Tax,
                     TaxType = taxRecord.TaxTypeId,
                     MunicipalityName = municipalityName,
+                    Id = taxRecord.Id,
                 };
             }
             catch (Exception)
