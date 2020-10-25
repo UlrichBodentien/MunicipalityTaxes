@@ -6,6 +6,9 @@ namespace MunicipalityTaxes.Core.Dtos
 {
     public class MunicipalityTaxDto
     {
+        [JsonProperty("id")]
+        public Guid Id { get; set; }
+
         [JsonProperty("tax")]
         public double Tax { get; set; }
 

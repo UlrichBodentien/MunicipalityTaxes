@@ -43,6 +43,13 @@ namespace MunicipalityTaxes.Producer.Controllers
             return Ok(id);
         }
 
+        [HttpPut]
+        public async Task<IActionResult> UpdateAsync([FromBody] MunicipalityTaxDto createMunicipalityTaxDto)
+        {
+            var didSucceed = await municipalityTaxRepository.UpdateAsync(createMunicipalityTaxDto);
+            return Ok(didSucceed);
+        }
+
         [HttpPost]
         [Route("csvImport")]
         public async Task<IActionResult> ImportCsvDataAsync([FromForm(Name = "file")] IFormFile file)

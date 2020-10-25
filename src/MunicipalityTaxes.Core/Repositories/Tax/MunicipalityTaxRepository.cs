@@ -84,6 +84,42 @@ namespace MunicipalityTaxes.Core.Repositories.Tax
             return await AddWithRetryAsync(municipalityTaxDto);
         }
 
+        public async Task<bool> UpdateAsync(MunicipalityTaxDto municipalityTaxDto)
+        {
+            return await UpdateWithRetryAsync(municipalityTaxDto);
+        }
+
+        private async Task<bool> UpdateWithRetryAsync(MunicipalityTaxDto municipalityTaxDto, int retries = 0)
+        {
+            try
+            {
+                var doesTaxExist = databaseContext.MunicipalityTax.Any(x => x.Id == municipalityTaxDto.Id);
+                if (doesTaxExist == false)
+                {
+                    return false;
+                }
+
+                var dataModel = await CreateDataModelAsync(municipalityTaxDto);
+                databaseContext.Attach(dataModel).State = EntityState.Modified;
+
+                await databaseContext.SaveChangesAsync();
+                return true;
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (retries == 0)
+                {
+                    return await UpdateWithRetryAsync(municipalityTaxDto, 1);
+                }
+
+                throw new UnableToAddException(HttpStatusCode.InternalServerError, "Unable to update the municipality tax");
+            }
+            catch (DbUpdateException)
+            {
+                throw new UnableToAddException(HttpStatusCode.InternalServerError, "Unable to update the municipality tax");
+            }
+        }
+
         private async Task<Guid> AddWithRetryAsync(MunicipalityTaxDto municipalityTaxDto, int retries = 0)
         {
             try
@@ -98,8 +134,7 @@ namespace MunicipalityTaxes.Core.Repositories.Tax
             {
                 if (retries == 0)
                 {
-                    retries++;
-                    return await AddAsync(municipalityTaxDto);
+                    return await AddWithRetryAsync(municipalityTaxDto, 1);
                 }
 
                 throw new UnableToAddException(HttpStatusCode.InternalServerError, "Unable to create the municipality tax");
@@ -124,14 +159,16 @@ namespace MunicipalityTaxes.Core.Repositories.Tax
                 throw new UnableToAddException(HttpStatusCode.BadRequest, "Start date must match the selected tax type");
             }
 
+            var id = municipalityTaxDto.Id == Guid.Empty ? Guid.NewGuid() : municipalityTaxDto.Id;
             var muncipalityTax = new MunicipalityTax
             {
-                Id = Guid.NewGuid(),
+                Id = id,
                 StartDate = municipalityTaxDto.StartDate,
                 Tax = municipalityTaxDto.Tax,
                 TaxTypeId = municipalityTaxDto.TaxType,
                 MunicipalityId = municipality.Id,
             };
+
             return muncipalityTax;
         }
 
