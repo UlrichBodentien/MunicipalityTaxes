@@ -7,13 +7,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MunicipalityTaxes.Producer"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MunicipalityTaxes.Core", "MunicipalityTaxes.Core\MunicipalityTaxes.Core.csproj", "{7FB1F0D6-9FFE-4367-9A7B-C11F54A3E115}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MunicipalityTaxes.Tests", "MunicipalityTaxes.Core.Tests\MunicipalityTaxes.Tests.csproj", "{C88D8BA1-993C-4785-9989-D15ABA005698}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MunicipalityTaxes.Tests", "MunicipalityTaxes.Core.Tests\MunicipalityTaxes.Tests.csproj", "{C88D8BA1-993C-4785-9989-D15ABA005698}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MunicipalityTaxes.Consumer", "MunicipalityTaxes.Consumer\MunicipalityTaxes.Consumer.csproj", "{37D10073-48DF-4062-8053-BE15265C3F1D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MunicipalityTaxes.Consumer", "MunicipalityTaxes.Consumer\MunicipalityTaxes.Consumer.csproj", "{37D10073-48DF-4062-8053-BE15265C3F1D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{75577CEE-154E-4FFE-BFFA-BBB61B19B1BB}"
 	ProjectSection(SolutionItems) = preProject
+		install-as-service.ps1 = install-as-service.ps1
 		..\README.md = ..\README.md
+		uninstall.ps1 = uninstall.ps1
 	EndProjectSection
 EndProject
 Global

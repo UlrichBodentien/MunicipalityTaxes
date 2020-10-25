@@ -9,7 +9,7 @@ namespace MunicipalityTaxes.Consumer
 {
     public class Program
     {
-        private const string ApiUrl = "https://localhost:44320";
+        private const string ApiUrl = "http://localhost:5000";
         private const string AssetsFolder = "Assets";
 
         private static IHttpRequestExecutor httpRequestExecutor;
